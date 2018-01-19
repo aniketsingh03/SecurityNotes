@@ -53,6 +53,7 @@
              400784:   e8 d7 fe ff ff     callq  400660 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
              400789:   b8 00 00 00 00     mov    $0x0,%eax
              40078e:   5d                 pop    %rbp
-             40078f:   c3                 retq     
+             40078f:   c3                 retq      
 
+    - LEA(Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store it into the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]
             
