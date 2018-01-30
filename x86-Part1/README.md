@@ -4,7 +4,7 @@
 * <b>Endianness-</b>
     - Little Endian-The memory (or registers) stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the lowest memory address. For example, while storing 0x12345678 into memory, it gets stored as 0x78563412.
     -  Big Endian-The memory stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the highest memory address. Considering the same example, while storing 0x12345678 into memory, it gets stored as 0x12345678.<br><br>
-    <center>![endianness](./endianness.png)<br><br>
+    <center>![endianness](../endianness.png)<br><br>
 * <b>Some general Registers-</b>
     - EAX - Stores return values.
     - EBX - (discussed later on)
@@ -21,7 +21,7 @@
 * <b>Some Common Instructions-</b>
     - NOP - No operation (:P)
     - PUSH - Pushes a word to the stack (can either be an immediate value or a value in a register). This operation automatically decrements the stack pointer (ESP) by 4 bytes (as on pushing, the stack (and consequently the ESP) advances towards lower memory address and so we need to decrement the stack pointer ) `usage : push <address> (immediate or relative)`.<br><br>
-    <center>![push](./push.png)<br><br>
+    <center>![push](../push.png)<br><br>
     - POP - Removes a word from the stack and adds 4 to the stack pointer(ESP) `usage : pop <address> (immediate or relative)`.<br><br>
     > Some function calling conventions
     > * **Cdecl (C declaration)**
@@ -54,6 +54,11 @@
              400789:   b8 00 00 00 00     mov    $0x0,%eax
              40078e:   5d                 pop    %rbp
              40078f:   c3                 retq      
-
-    - LEA(Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store it into the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]
+    
+    - LEA(Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store it into the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]` the we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by the value at the address `ebx`.
+    - JMP(Jump) - This instruction is used to jump to the provided address. You might say that it is similar to the `CALL` instruction, but it is different in a sense that in the jump instruction does not return back to the address from where it is being called, whereas call instruction is guaranteed to return to the address from which it is being called. **Usage**: `jmp <immediate_address>`. 
+    - jne (jump if not equal), jle(jump if less than) and jge(jump if greater than) - With `jne`, the control will jump to the specified address if the comparison above it shows that the 2 numbers are not equal. The use of `jle` and `jge` can also be understood intuitively. **Usage**:
+             cmp eax,ecx
+             jne 0040103020
+    The above statement will jump to address 0040103020 if the comparison above evaluates to false.    
             
