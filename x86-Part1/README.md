@@ -4,7 +4,7 @@
 * <b>Endianness-</b>
     - Little Endian-The memory (or registers) stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the lowest memory address. For example, while storing 0x12345678 into memory, it gets stored as 0x78563412.
     -  Big Endian-The memory stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the highest memory address. Considering the same example, while storing 0x12345678 into memory, it gets stored as 0x12345678.<br><br>
-    <center>![endianness](../endianness.png)<br><br>
+            <center><img src="../endianness.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
 * <b>Some general Registers-</b>
     - EAX - Stores return values.
     - EBX - (discussed later on)
@@ -17,11 +17,16 @@
     - EBP - Stores base address for a particular segment or function 
     - EIP - Pointer to next instruction to execute (Instruction pointer).
     - EFLAGS - consists of a series of flag pointers which are responsible for all conditional statements, and some other cases also (flags in this register is updated after every step of execution).<br><br>
+    
+    > **TRIVIA**: The registers `EAX`, `EBX`, `ECX`, `EDX` allow selective access to their lower order bits. The following image explains clearly:<br>
+            <center><img src="../registers.png" alt="Drawing" style="width: 500px; height:400px"/></center><br> 
+    > The registers `AX`, `AH` and `AL`give the information about respective bit positions.
+
 * <b>Stack</b> : The Stack always grows towards lower memory address.<br><br>  
 * <b>Some Common Instructions-</b>
     - NOP - No operation (:P)
     - PUSH - Pushes a word to the stack (can either be an immediate value or a value in a register). This operation automatically decrements the stack pointer (ESP) by 4 bytes (as on pushing, the stack (and consequently the ESP) advances towards lower memory address and so we need to decrement the stack pointer ) `usage : push <address> (immediate or relative)`.<br><br>
-    <center>![push](../push.png)<br><br>
+            <center><img src="../push.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
     - POP - Removes a word from the stack and adds 4 to the stack pointer(ESP) `usage : pop <address> (immediate or relative)`.<br><br>
     > Some function calling conventions
     > * **Cdecl (C declaration)**
@@ -30,35 +35,47 @@
     >     - **caller** is responsible for cleaning up the stack.
     > * **Stdcall**
     >     - All conventions are same as that of cdecl but the only difference is that instead of the caller the **callee** is responsible for cleaning the stack pointer.
-    <br><br>
+    <br>
+    
     - CALL -
         - It pushes the address of next instruction to the stack (so that RET can use this address when the procedure is done) and then moves to the desired address (EIP is assigned as the new address value).
         - Destination address may be absolute or relative (to the end of the instruction).
     - RET -
-        - Using the cdecl convention-
+        - Using the **cdecl** convention-
             - Stack is popped into the value of EIP register.
             - The caller then cleans up the stack by popping (and thus incrementing the ESP) the stack values.
-        - Using the stdcall convention-
+        - Using the **stdcall** convention-
             - Stack is popped into the value of EIP register.
-            - The callee is responsible for cleaning up the stack, so the return statements are like ret 0x08, ret 0x20 etc, and are responsible for cleaning up the stack before reaching the retirn address.
-    - MOV - Responnsible for moving values from register to register, register to memory, memory to register but **never** from memory to memory `usage : mov <destination>,<source>`.<br><br>  
-             mov eax,ebx    //eax reg will be assigned the value taken by ebx reg
-             mov eax,[ebx]  //eax reg will be assigned the value taken by block which is located at the address stored by ebx.  
-### Sample Assembly code     
-             0000000000400776 <main>:
-             400776:   55                 push   %rbp
-             400777:   48 89 e5           mov    %rsp,%rbp
-             40077a:   be 74 08 40 00     mov    $0x400874,%esi
-             40077f:   bf 60 10 60 00     mov    $0x601060,%edi
-             400784:   e8 d7 fe ff ff     callq  400660 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
-             400789:   b8 00 00 00 00     mov    $0x0,%eax
-             40078e:   5d                 pop    %rbp
-             40078f:   c3                 retq      
-    
-    - LEA(Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store it into the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]` the we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by the value at the address `ebx`.
-    - JMP(Jump) - This instruction is used to jump to the provided address. You might say that it is similar to the `CALL` instruction, but it is different in a sense that in the jump instruction does not return back to the address from where it is being called, whereas call instruction is guaranteed to return to the address from which it is being called. **Usage**: `jmp <immediate_address>`. 
-    - jne (jump if not equal), jle(jump if less than) and jge(jump if greater than) - With `jne`, the control will jump to the specified address if the comparison above it shows that the 2 numbers are not equal. The use of `jle` and `jge` can also be understood intuitively. **Usage**:
+            - The callee is responsible for cleaning up the stack, so the return statements are like ret 0x08, ret 0x20 etc, and are responsible for cleaning up the stack before reaching the return address.
+    - MOV - Responsible for moving values from register to register, register to memory, memory to register but **never** from memory to memory `usage : mov <destination>,<source>`.<br>
+
+    ```
+        INTEL SYNTAX : Commands go by the format Destination <- Source(s).
+                 mov eax,ebx    //eax reg will be assigned the value taken by ebx reg
+                 mov eax,[ebx]  //eax reg will be assigned the value taken by block which is located at the address stored by ebx.
+        
+        AT&T SYNTAX : Commands go by the format Source(s) <- Destination and use % sign before register names. 
+                mov %ebx,%eax    
+                mov ebx,[eax]
+    ```
+    **Sample Assembly Code**
+    ```
+                 0000000000400776 <main>:
+                 400776:   55                 push   %rbp
+                 400777:   48 89 e5           mov    %rsp,%rbp
+                 40077a:   be 74 08 40 00     mov    $0x400874,%esi
+                 40077f:   bf 60 10 60 00     mov    $0x601060,%edi
+                 400784:   e8 d7 fe ff ff     callq  400660 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+                 400789:   b8 00 00 00 00     mov    $0x0,%eax
+                 40078e:   5d                 pop    %rbp
+                 40078f:   c3                 retq      
+    ```
+    - LEA (Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store itinto  the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]`    the we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by thevalue at the   address `ebx`.
+    - JMP (Jump) - This instruction is used to jump to the provided address. You might say that it is similar to the `CALL`instruction,  but it is different in a sense that in the jump instruction does not return back to the address from where it isbeing called,    whereas call instruction is guaranteed to return to the address from which it is being called. **Usage**:  `jmp <immediate_address>`. 
+    - jne (jump if not equal), jle(jump if less than) and jge(jump if greater than) - With `jne`, the control will jump to  thespecified address if the comparison above it shows that the 2 numbers are not equal. The use of `jle` and `jge` can also  beunderstood intuitively. **Usage**:
+    ```
              cmp eax,ecx
              jne 0040103020
-    The above statement will jump to address 0040103020 if the comparison above evaluates to false.    
+    ```         
+    The above statement will jump to address 0040103020 if the comparison above evaluates to **false**.    
             
