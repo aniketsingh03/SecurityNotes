@@ -65,17 +65,81 @@
                  400777:   48 89 e5           mov    %rsp,%rbp
                  40077a:   be 74 08 40 00     mov    $0x400874,%esi
                  40077f:   bf 60 10 60 00     mov    $0x601060,%edi
-                 400784:   e8 d7 fe ff ff     callq  400660 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+                 400784:   e8 d7 fe ff ff     callq  400660
                  400789:   b8 00 00 00 00     mov    $0x0,%eax
                  40078e:   5d                 pop    %rbp
                  40078f:   c3                 retq      
     ```
     - LEA (Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store itinto  the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]`    the we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by thevalue at the   address `ebx`.
     - JMP (Jump) - This instruction is used to jump to the provided address. You might say that it is similar to the `CALL`instruction,  but it is different in a sense that in the jump instruction does not return back to the address from where it isbeing called,    whereas call instruction is guaranteed to return to the address from which it is being called. **Usage**:  `jmp <immediate_address>`. 
-    - jne (jump if not equal), jle(jump if less than) and jge(jump if greater than) - With `jne`, the control will jump to  thespecified address if the comparison above it shows that the 2 numbers are not equal. The use of `jle` and `jge` can also  beunderstood intuitively. **Usage**:
+    - jne (jump if not equal) - With `jne`, the control will jump to  thespecified address if the comparison above it shows that the 2 numbers are not equal. The use of some other similar operations like `je`(jump if equal), `jl`(jump if less than), `jle`(jump if less than or equal to), `jg`(jump if greater than), `jge`(jump if greater than or equal to) can also be understood intuitively.<br> 
+    **Usage**:
     ```
              cmp eax,ecx
              jne 0040103020
     ```         
-    The above statement will jump to address 0040103020 if the comparison above evaluates to **false**.    
-            
+    The above statement will jump to address 0040103020 if the comparison above evaluates to **false**.
+
+* <b>Calling Functions-</b>
+    We can write functions in assembly and call them either from assembly code itself or from a C code.
+    Here are both the two methods.
+    - Calling from assembly itself:<br><br>
+    ```
+            global _start
+            _start:
+                push 21  //value to be passed to the function needs to be pushed into the stack
+                call times2
+                mov ebx, eax //storing exit code in ebx register, the eax reg stores the returned value.
+                mov eax, 1   //store 1 in eax to perform sys_exit system call
+                int 0x80  //interrupt to perform syscall for exit
+            times2:
+                push ebp //push ebp to keep track of address to return to whereas the stack can still grow
+                mov ebp, esp
+                mov eax, [ebp+8] //accessing the returned value and storing it in eax
+                add eax, eax 
+                mov esp, ebp //moving esp back to ebp
+                pop ebp //restore the stack back to the state before this function was called
+                ret //keyword to return to the callee
+    ```
+    EXPLAINATION : Whenever a `call` is encountered, the address of the next statement (here the `mov ebx, eax` line) is pushed to the stack and after we reach *times2* function, we have pushed an additional register ebp into the stack (Remember that the function argument (here 21) is present before the    return address in the stack). So, in order to access arguments passed we need to access value at `ebp  +8` at the least, and then advance by 4 for each argument. For example, in case, there are three  arguments, then they can be accessed by `ebp+8`, `ebp+12` and `ebp+16`. (`ebp+4` returns the returned  address stored in the stack). This pushing of `ebp` at the start and popping it at the end of a    function ensures the proper functioning of stack in case of nested function calls as each function     manages its section of stack after the `ebp` pointer, and safely pops it before returning.<br>
+    
+    - Calling from C code :<br>
+    In this case we'll just declare the function in the assembly code and call it from the C code.<br><br>
+    ```
+            global add42
+            add42:
+                push ebp
+                mov ebp, esp
+                mov eax, [ebp+8]
+                add eax, 42
+                mov esp, ebp
+                pop ebp
+                ret
+    ```
+    
+    In order to access the above function we'll just create a C header file so that our C code can access the function.
+    
+    ```C
+    //add42.h
+    int add42(int x)
+    ```
+    
+    and the main function: 
+    
+    ```C
+    //main.c
+    #include <stdio.h>
+    #include "add42.h"
+        
+    int main(){
+    int answer;
+    answer = add42(30);
+    printf("Result: %i\n", answer);        
+    return 0;
+    }
+    ```
+    
+    *Running the above code:*<br>
+    - The assembly code can be converted into an object file (.o extension) using an assembler. One such  assembler is **nasm**. We can use the following command to convert assembly code to an object file : `nasm -f elf32 add42.asm -o add42.o`. `elf32` is the executable and linkable format for a 32-bit linux system.
+    - Then in order to link it, we can use `gcc` to link the object code to our C library. This can be done as `gcc -m32 add42.o main.c ex` (`ex` is the name to our executable file).
+    - We can use a common C code but the assembly code is platform-dependent.
