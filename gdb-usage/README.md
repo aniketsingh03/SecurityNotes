@@ -39,8 +39,17 @@ main(int argc, char **argv)
 - `run <argv_1> <argv_2>` - Used to run the program with arguments as **argv_1** and **argv_2**.
 - `disassemble <function_name>` - Used to see the assembly level code of the **function_name** specified.
 - `break <line_no>` - Used to set a breakpoint at the specified line in the source code. Use `help break` for more help on setting breakpoints.
-- `nexti` - Short for *next instruction*, used to execute the instruction at EIP, and advance EIP to the next instruction.
+- `next/step` - used to execute instructions one by one.
+    - `next` - On a line of code that has a function call, `next` will go 'over' the function call to the next line of code.
+    - `step` - On a line of code that has a function call, `step` will go 'into' the function call.
 - `info registers` - Shows the values of various registers (gpr and segment) and flags. We can even use the shortcut for this command like `i r eip` to know about the value stored by the **eip** register.
+- `set x = 3` - Used to set the value of a local variable to a certain value.
+- `finish` - Used to finish a function.
+- `print <var_name>` - Used to print the value of a local variable.
+- `info frame` - Used to know the info of the current frame on the stack (info about return address and current eip). A typical frame looks like this:
+<br>
+<center><img src="../frame.png" alt="Frame" style="width: 500px; height:400px"/></center>
+
 - `x/FMT ADDRESS` - Examine memory at any moment in the program.
     - Here, **FMT** represents the format in which you desire to see the results. Format is a repeat count followed by the format letter (octal, decimal, etc) and a size letter (word, byte, etc). Available format letters and size letters can be seen from its help by running `help x`. Some common formats are as follows:
         - o - Display in octal

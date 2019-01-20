@@ -70,7 +70,7 @@
                  40078e:   5d                 pop    %rbp
                  40078f:   c3                 retq      
     ```
-    - LEA (Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and store itinto  the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]`    the we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by thevalue at the   address `ebx`.
+    - LEA (Load effective address) - Contrary to `mov` which goes to the memory location to get the value stored there and stores it into  the register, `lea` is merely used for address caluculation stuff and does not go to the memory. So, when we write `lea eax,[ebx]`, then we are assigning `eax` with the value that is equal to the value taken by `ebx` and not the one taken by the value at the   address `ebx`. 
     - JMP (Jump) - This instruction is used to jump to the provided address. You might say that it is similar to the `CALL`instruction,  but it is different in a sense that in the jump instruction does not return back to the address from where it isbeing called,    whereas call instruction is guaranteed to return to the address from which it is being called. **Usage**:  `jmp <immediate_address>`. 
     - jne (jump if not equal) - With `jne`, the control will jump to  thespecified address if the comparison above it shows that the 2 numbers are not equal. The use of some other similar operations like `je`(jump if equal), `jl`(jump if less than), `jle`(jump if less than or equal to), `jg`(jump if greater than), `jge`(jump if greater than or equal to) can also be understood intuitively.<br> 
     **Usage**:
@@ -79,6 +79,8 @@
              jne 0040103020
     ```         
     The above statement will jump to address 0040103020 if the comparison above evaluates to **false**.
+    - movsb/movsw/movsd - These set of commands are used to move a 1 byte(b)/2 byte(w)/4 byte(d) value respectively from the `edi` register to the `esi` register.Typically, this command automatically increments both these registers by 4 bytes after execution.
+    - rep movsd - This is an advanced form of the previous command. This repeats the `movsd` command 8 times, ie it copies a 32 bit value instead of a regular 4 byte value.
 
 * <b>Calling Functions-</b>
     We can write functions in assembly and call them either from assembly code itself or from a C code.
