@@ -8,7 +8,7 @@ The assembly code is divided into various segments which are as follows:
 
 Here is how the memory actually looks like:
 <br>
-<center><img src="../memory.png" alt="Memory" style="width: 500px; height:400px"/></center>
+<center><img src="../images/memory.png" alt="Memory" style="width: 500px; height:400px"/></center>
 
 ### Linux system calls
 - These are the libraries that linux exposes to get various tasks done. Examples are `exit()`, `read()`, etc.

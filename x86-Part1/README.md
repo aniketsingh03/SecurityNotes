@@ -4,7 +4,7 @@
 * <b>Endianness-</b>
     - Little Endian-The memory (or registers) stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the lowest memory address. For example, while storing 0x12345678 into memory, it gets stored as 0x78563412.
     -  Big Endian-The memory stores data in a format where the least signiificant byte(8 bits) of a word(32 bits) is stored at the highest memory address. Considering the same example, while storing 0x12345678 into memory, it gets stored as 0x12345678.<br><br>
-            <center><img src="../endianness.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
+            <center><img src="../images/endianness.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
 * <b>Some general Registers-</b>
     - EAX - Stores return values.
     - EBX - (discussed later on)
@@ -19,14 +19,14 @@
     - EFLAGS - consists of a series of flag pointers which are responsible for all conditional statements, and some other cases also (flags in this register is updated after every step of execution).<br><br>
     
     > **TRIVIA**: The registers `EAX`, `EBX`, `ECX`, `EDX` allow selective access to their lower order bits. The following image explains clearly:<br>
-            <center><img src="../registers.png" alt="Drawing" style="width: 500px; height:400px"/></center><br> 
+            <center><img src="../images/registers.png" alt="Drawing" style="width: 500px; height:400px"/></center><br> 
     > The registers `AX`, `AH` and `AL`give the information about respective bit positions.
 
 * <b>Stack</b> : The Stack always grows towards lower memory address.<br><br>  
 * <b>Some Common Instructions-</b>
     - NOP - No operation (:P)
     - PUSH - Pushes a word to the stack (can either be an immediate value or a value in a register). This operation automatically decrements the stack pointer (ESP) by 4 bytes (as on pushing, the stack (and consequently the ESP) advances towards lower memory address and so we need to decrement the stack pointer ) `usage : push <address> (immediate or relative)`.<br><br>
-            <center><img src="../push.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
+            <center><img src="../images/push.png" alt="Drawing" style="width: 500px; height:400px"/></center><br><br>
     - POP - Removes a word from the stack and adds 4 to the stack pointer(ESP) `usage : pop <address> (immediate or relative)`.<br><br>
     > Some function calling conventions
     > * **Cdecl (C declaration)**

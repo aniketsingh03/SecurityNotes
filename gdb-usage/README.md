@@ -48,7 +48,7 @@ main(int argc, char **argv)
 - `print <var_name>` - Used to print the value of a local variable.
 - `info frame` - Used to know the info of the current frame on the stack (info about return address and current eip). A typical frame looks like this:
 <br>
-<center><img src="../frame.png" alt="Frame" style="width: 500px; height:400px"/></center>
+<center><img src="../images/frame.png" alt="Frame" style="width: 500px; height:400px"/></center>
 
 - `x/FMT ADDRESS` - Examine memory at any moment in the program.
     - Here, **FMT** represents the format in which you desire to see the results. Format is a repeat count followed by the format letter (octal, decimal, etc) and a size letter (word, byte, etc). Available format letters and size letters can be seen from its help by running `help x`. Some common formats are as follows:
